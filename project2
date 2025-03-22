@@ -1,0 +1,194 @@
+import customtkinter as ctk
+
+CODE = {'a': '.-',     'b': '-...',   'c': '-.-.',
+        'd': '-..',    'e': '.',      'f': '..-.',
+        'g': '--.',    'h': '....',   'i': '..',
+        'j': '.---',   'k': '-.-',    'l': '.-..',
+        'm': '--',     'n': '-.',     'o': '---',
+        'p': '.--.',   'q': '--.-',   'r': '.-.',
+        's': '...',    't': '-',      'u': '..-',
+        'v': '...-',   'w': '.--',    'x': '-..-',
+        'y': '-.--',   'z': '--..',
+
+        'а': '.-',     'б': '-...',   'в': '.--',
+        'г': '--.',    'д': '-..',    'е': '.',
+        'ж': '...-',   'з': '--..',   'и': '..',
+        'й': '.---',   'к': '-.-',    'л': '.-..',
+        'м': '--',     'н': '-.',     'о': '---',
+        'п': '.--.',   'р': '.-.',    'с': '...',
+        'т': '-',      'у': '..-',    'ф': '..-.',
+        'х': '....',   'ц': '-.-.',   'ч': '---.',
+        'ш': '----',   'щ': '--.-',   'ъ': '.--.-.',
+        'ы': '-.--',   'ь': '-..-',   'э': '..-..',
+        'ю': '..--',   'я': '.-.-',
+
+        '0': '-----',  '1': '.----',  '2': '..---',
+        '3': '...--',  '4': '....-',  '5': '.....',
+        '6': '-....',  '7': '--...',  '8': '---..',
+        '9': '----.',  ', ':'--..--', '.':'.-.-.-',
+        '?':'..--..', '/':'-..-.', '-':'-....-',
+        '(':'-.--.', ')':'-.--.-', '!':'-.-.--',
+        '&':'.-...',  ':':'---...', ';':'-.-.-.',
+        '+':'.-.-.',  '\'':'-.--.',  '"':'.-..-.',
+        '@':'.--.-.', '=':'-...-',  ',':'--..--',
+        '$':'...-..-', ' ':'/'
+        }
+
+ALFAVIT_EU_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+ALFAVIT_EU_LOWER = 'abcdefghijklmnopqrstuvwxyz'
+ALFAVIT_RU_UPPER = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
+ALFAVIT_RU_LOWER = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+
+
+def to_cezar(message, step):
+    new_message = ''
+    for letter in message:
+        if letter in ALFAVIT_EU_UPPER:
+            position = ALFAVIT_EU_UPPER.find(letter)
+            new_position = (position + step) % len(ALFAVIT_EU_UPPER)
+            new_letter = ALFAVIT_EU_UPPER[new_position]
+            new_message += new_letter
+        elif letter in ALFAVIT_EU_LOWER:
+            position = ALFAVIT_EU_LOWER.find(letter)
+            new_position = (position + step) % len(ALFAVIT_EU_LOWER)
+            new_letter = ALFAVIT_EU_LOWER[new_position]
+            new_message += new_letter
+        elif letter in ALFAVIT_RU_UPPER:
+            position = ALFAVIT_RU_UPPER.find(letter)
+            new_position = (position + step) % len(ALFAVIT_RU_UPPER)
+            new_letter = ALFAVIT_RU_UPPER[new_position]
+            new_message += new_letter
+        elif letter in ALFAVIT_RU_LOWER:
+            position = ALFAVIT_RU_LOWER.find(letter)
+            new_position = (position + step) % len(ALFAVIT_RU_LOWER)
+            new_letter = ALFAVIT_RU_LOWER[new_position]
+            new_message += new_letter
+        else:
+            new_message += letter
+    return new_message
+
+
+def to_morse(s):
+    return ' '.join(CODE.get(i.lower()) for i in s)
+
+
+def to_code_word(message, word):
+    # смотреть здесь, шифр с кодовым словом
+    new_word = ""
+    new_message = ""
+    for letter in word:
+        if letter not in new_word:
+            new_word += letter
+
+    if new_word.lower()[0] in ALFAVIT_EU_LOWER:
+        NEW_ALFAVIT_EU_LOWER = new_word.lower() + "".join(
+            ["" + letter for letter in ALFAVIT_EU_LOWER if letter not in new_word]
+        )
+        NEW_ALFAVIT_EU_UPPER = NEW_ALFAVIT_EU_LOWER.upper()
+
+        for letter in message:
+            if letter in ALFAVIT_EU_UPPER:
+                position = ALFAVIT_EU_UPPER.find(letter)
+                new_letter = NEW_ALFAVIT_EU_UPPER[position]
+                new_message += new_letter
+            elif letter in ALFAVIT_EU_LOWER:
+                position = ALFAVIT_EU_LOWER.find(letter)
+                new_letter = NEW_ALFAVIT_EU_LOWER[position]
+                new_message += new_letter
+            else:
+                new_message += letter
+
+        return new_message
+
+    if new_word.lower()[0] in ALFAVIT_RU_LOWER:
+        NEW_ALFAVIT_RU_LOWER = new_word.lower() + "".join(
+            ["" + letter for letter in ALFAVIT_RU_LOWER if letter not in new_word]
+        )
+        NEW_ALFAVIT_RU_UPPER = NEW_ALFAVIT_RU_LOWER.upper()
+
+        for letter in message:
+            if letter in ALFAVIT_RU_UPPER:
+                position = ALFAVIT_RU_UPPER.find(letter)
+                new_letter = NEW_ALFAVIT_RU_UPPER[position]
+                new_message += new_letter
+            elif letter in ALFAVIT_RU_LOWER:
+                position = ALFAVIT_RU_LOWER.find(letter)
+                new_letter = NEW_ALFAVIT_RU_LOWER[position]
+                new_message += new_letter
+            else:
+                new_message += letter
+
+        return new_message
+                # конец
+
+def code():
+    if widget_combobox.get() == "Азбука Морзе":
+        answer = widget_textbox.get('0.0', 'end')
+        answer_morse = to_morse(answer[:-1])
+        widget_textbox.delete("0.0", "end")
+        widget_unactive_textbox.delete("0.0", "end")
+        widget_unactive_textbox.insert('0.0', answer_morse)
+    elif widget_combobox.get() == "Шифр Цезаря":
+        answer = widget_textbox.get('0.0', 'end')
+        step = int(widget_entry.get())
+        widget_entry.delete(0, 'end')
+        answer_cezar = to_cezar(answer[:-1], step)
+        widget_textbox.delete("0.0", "end")
+        widget_unactive_textbox.delete("0.0", "end")
+        widget_unactive_textbox.insert('0.0', answer_cezar)
+    elif widget_combobox.get() == "Шифр с кодовым словом":
+        answer = widget_textbox.get('0.0', 'end')
+        word = widget_entry.get()
+        answer_code_word = to_code_word(answer, word)
+        widget_entry.delete(0, 'end')
+        widget_textbox.delete("0.0", "end")
+        widget_unactive_textbox.delete("0.0", "end")
+        widget_unactive_textbox.insert('0.0', answer_code_word)
+    else:
+        widget_textbox.delete("0.0", "end")
+        widget_unactive_textbox.delete("0.0", "end")
+
+
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("dark-blue")
+
+root = ctk.CTk()
+root.title("Шифрование")
+root.geometry("1000x600")
+my_font = ctk.CTkFont(family="Roboto", size=20)
+
+
+widget_button = ctk.CTkButton(master=root)
+widget_button.configure(text="Готово", font=my_font,  width=600, command=code)
+
+widget_entry = ctk.CTkEntry(master=root)
+widget_entry.configure(font=my_font, placeholder_text="Шаг/Кодовое слово", height=80, width=250)
+
+
+widget_textbox = ctk.CTkTextbox(master=root)
+widget_textbox.configure(font=my_font, height=250, width=600)
+
+
+widget_unactive_textbox = ctk.CTkTextbox(master=root)
+widget_unactive_textbox.configure(font=my_font, height=200,  width=970)
+
+
+elems = ["Шифр Цезаря", "Шифр с кодовым словом", "Солёный язык", "Азбука Морзе"]
+widget_combobox = ctk.CTkComboBox(master=root)
+widget_combobox.configure(font=my_font, width=300, values=elems, state="readonly")
+widget_combobox.set("Азбука Морзе")
+
+
+rows, columns = 6, 3
+for i in range(rows):
+    root.rowconfigure(index=i, weight=1)
+for i in range(columns):
+    root.columnconfigure(index=i, weight=1)
+widget_combobox.grid(row=0, column=0)
+widget_entry.grid(row=2, column=0, rowspan=2)
+widget_button.grid(row=3, column=1, columnspan=2)
+widget_textbox.grid(row=0, column=1, rowspan=3, columnspan=2)
+widget_unactive_textbox.grid(row=4, column=0, rowspan=2, columnspan=3)
+
+
+root.mainloop()
